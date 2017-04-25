@@ -67,16 +67,10 @@ public class TestDiceRoll {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		Random rng = new Random();
-		double r = Math.sqrt(-2 * Math.log(rng.nextDouble()));
-		double θ = 2 * Math.PI * rng.nextDouble();
-		double x = r * Math.cos(θ);
-		double y = r * Math.sin(θ);
-		System.out.println(x + y);
 		RandomOrgClient roc = RandomOrgClient.getRandomOrgClient("0f0036cd-513c-4e31-becd-a5d26de8ead4");
 		        int[] randoms = null;
 				try {
-					randoms = roc.generateIntegers(rolls, dice, (dice * sides));
+					randoms = roc.generateIntegers(rolls * dice, dice, sides);
 				} catch (RandomOrgSendTimeoutException | RandomOrgKeyNotRunningError
 						| RandomOrgInsufficientRequestsError | RandomOrgInsufficientBitsError
 						| RandomOrgBadHTTPResponseException | RandomOrgRANDOMORGError | RandomOrgJSONRPCError
@@ -84,13 +78,16 @@ public class TestDiceRoll {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				for (int i = 0; i < randoms.length; i++) {
-					if (result.get(randoms[i]) != null)
-						result.put(randoms[i], result.get(randoms[i]) + 1);
-					else
-						result.put(randoms[i], 1);
+		        System.out.println(Arrays.toString(randoms));
+				for (int i = 0; i < randoms.length; i += dice) { 
+					for (int j = 1 + i; j < dice + i; j++) { 
+						//System.out.println("sum: " + (randoms[i] + randoms[j]));
+						if (result.get(randoms[i] + randoms[j]) != null)
+							result.put(randoms[i] + randoms[j], result.get(randoms[i] + randoms[j]) + 1);
+						else
+							result.put(randoms[i] + randoms[j], 1);
+					}
 				}
-		        //System.out.println(Arrays.toString(randoms));
 		
 		
 		for (Map.Entry<Integer, Integer> i : result.entrySet()) 
