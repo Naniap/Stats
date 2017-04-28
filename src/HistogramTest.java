@@ -12,17 +12,23 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.SimpleHistogramBin;
+import org.jfree.data.statistics.SimpleHistogramDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 
 public class HistogramTest extends ApplicationFrame {
-
+	private static int dice;
+	private static int rolls;
+	private static int sides;
     public HistogramTest(String title) {
         super(title);
         JPanel chartPanel = crearPanel();
@@ -31,37 +37,26 @@ public class HistogramTest extends ApplicationFrame {
     }
 
     private static IntervalXYDataset crearDataset() {
-        HistogramDataset dataset = new HistogramDataset();
+    	SimpleHistogramDataset dataset2 = new SimpleHistogramDataset("Test");
 		Scanner scan = new Scanner(System.in);
 		System.out.println("How many dice: ");
-		int dice = scan.nextInt();
+		dice = scan.nextInt();
 		System.out.println("How many rolls: ");
-		int rolls = scan.nextInt();
+		rolls = scan.nextInt();
 		System.out.println("How many sides: ");
-		int sides = scan.nextInt();
+		sides = scan.nextInt();
 		scan.close();
-		List<Double> results = new ArrayList<>();
+		for (int i = dice; i <= sides * dice + 1; i++) { 
+			dataset2.addBin(new SimpleHistogramBin(i, i+1, true, false)); 
+		}
 		for (int i = 0; i < rolls; i++) { 
 			double num = 0;
 			for (int j = 0; j < dice; j++) { 
 				num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
 			}
-			results.add(num);
+			dataset2.addObservation(num);
 		}
-        dataset.addSeries("Dice results", convertDoubles(results), (sides * dice) - 1);
-        return dataset;
-    }
-    public static double[] convertDoubles(List<Double> doubles)
-    {
-        double[] ret = new double[doubles.size()];
-        Iterator<Double> iterator = doubles.iterator();
-        int i = 0;
-        while(iterator.hasNext())
-        {
-            ret[i] = iterator.next();
-            i++;
-        }
-        return ret;
+        return dataset2;
     }
     private static JFreeChart crearChart(IntervalXYDataset dataset) {
         JFreeChart chart = ChartFactory.createHistogram(
@@ -77,6 +72,9 @@ public class HistogramTest extends ApplicationFrame {
         plot.setRangeGridlineStroke(new BasicStroke(1.0f));
         XYBarRenderer renderer = (XYBarRenderer) plot.getRenderer();
         renderer.setDrawBarOutline(false);
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setRange(dice, dice * sides + 1);
+        domainAxis.setAutoRangeMinimumSize(1);
         return chart;
     }
 
