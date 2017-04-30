@@ -1,4 +1,7 @@
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,8 +9,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
+import java.awt.event.ActionListener;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,19 +32,39 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 
-public class HistogramTest extends ApplicationFrame {
-	private static int dice;
-	private static int rolls;
-	private static int sides;
+public class HistogramTest extends ApplicationFrame implements ActionListener {
+	private int dice;
+	private int rolls;
+	private int sides;
+	private SimpleHistogramDataset dataset;
+	private JTextArea box;
     public HistogramTest(String title) {
         super(title);
         JPanel chartPanel = crearPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 475));
         setContentPane(chartPanel);
+	       JButton button = new JButton("Add observations: ");
+	        button.addActionListener(this);
+	        getContentPane().add(button, BorderLayout.SOUTH);
+	        box = new JTextArea("20");
+	        Color c = new Color(0,0,0,100);
+	        box.setBackground(c);
+	        getContentPane().add(box, BorderLayout.NORTH);    
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // add a random observation in the range 0 to 3
+		for (int i = 0; i < Integer.parseInt(box.getText()); i++) { 
+			double num = 0;
+			for (int j = 0; j < dice; j++) { 
+				num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
+			}
+			dataset.addObservation(num);
+		}
     }
 
-    private static IntervalXYDataset crearDataset() {
-    	SimpleHistogramDataset dataset2 = new SimpleHistogramDataset("Test");
+    private IntervalXYDataset crearDataset() {
+    	dataset = new SimpleHistogramDataset("Test");
 		Scanner scan = new Scanner(System.in);
 		System.out.println("How many dice: ");
 		dice = scan.nextInt();
@@ -47,18 +74,18 @@ public class HistogramTest extends ApplicationFrame {
 		sides = scan.nextInt();
 		scan.close();
 		for (int i = dice; i <= sides * dice + 1; i++) { 
-			dataset2.addBin(new SimpleHistogramBin(i, i+1, true, false)); 
+			dataset.addBin(new SimpleHistogramBin(i, i+1, true, false)); 
 		}
 		for (int i = 0; i < rolls; i++) { 
 			double num = 0;
 			for (int j = 0; j < dice; j++) { 
 				num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
 			}
-			dataset2.addObservation(num);
+			dataset.addObservation(num);
 		}
-        return dataset2;
+        return dataset;
     }
-    private static JFreeChart crearChart(IntervalXYDataset dataset) {
+    private JFreeChart crearChart(IntervalXYDataset dataset) {
         JFreeChart chart = ChartFactory.createHistogram(
                 "Histogram",
                 "Die Sum",
@@ -78,7 +105,7 @@ public class HistogramTest extends ApplicationFrame {
         return chart;
     }
 
-    public static JPanel crearPanel() {
+    public JPanel crearPanel() {
         JFreeChart chart = crearChart(crearDataset());
         return new ChartPanel(chart);
     }
