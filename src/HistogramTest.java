@@ -30,26 +30,37 @@ import org.jfree.data.statistics.SimpleHistogramDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.JSplitPane;
 
 
 public class HistogramTest extends ApplicationFrame implements ActionListener {
-	private int dice;
-	private int rolls;
-	private int sides;
+	private static int dice;
+	private static int rolls;
+	private static int sides;
 	private SimpleHistogramDataset dataset;
 	private JTextArea box;
-    public HistogramTest(String title) {
+    public HistogramTest(String title, int rolls, int dice, int sides) {
         super(title);
+        HistogramTest.dice = dice;
+        HistogramTest.rolls = rolls;
+        HistogramTest.sides = sides;
         JPanel chartPanel = crearPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 475));
-        setContentPane(chartPanel);
-	       JButton button = new JButton("Add observations: ");
-	        button.addActionListener(this);
-	        getContentPane().add(button, BorderLayout.SOUTH);
-	        box = new JTextArea("20");
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(chartPanel);
 	        Color c = new Color(0,0,0,100);
-	        box.setBackground(c);
-	        getContentPane().add(box, BorderLayout.NORTH);    
+	        
+	        JPanel panel = new JPanel();
+	        getContentPane().add(panel, BorderLayout.SOUTH);
+	        JButton button = new JButton("Add observations: ");
+	        panel.add(button);
+	        button.setHorizontalAlignment(SwingConstants.LEFT);
+	        //setContentPane(chartPanel);
+	        box = new JTextArea("20");
+	        panel.add(box);
+	        box.setBackground(Color.WHITE);
+	        button.addActionListener(this);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -64,15 +75,7 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     }
 
     private IntervalXYDataset crearDataset() {
-    	dataset = new SimpleHistogramDataset("Test");
-		Scanner scan = new Scanner(System.in);
-		System.out.println("How many dice: ");
-		dice = scan.nextInt();
-		System.out.println("How many rolls: ");
-		rolls = scan.nextInt();
-		System.out.println("How many sides: ");
-		sides = scan.nextInt();
-		scan.close();
+    	dataset = new SimpleHistogramDataset("Die Toss");
 		for (int i = dice; i <= sides * dice + 1; i++) { 
 			dataset.addBin(new SimpleHistogramBin(i, i+1, true, false)); 
 		}
@@ -87,7 +90,7 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     }
     private JFreeChart crearChart(IntervalXYDataset dataset) {
         JFreeChart chart = ChartFactory.createHistogram(
-                "Histogram",
+                "",
                 "Die Sum",
                 "Die Toss",
                 dataset,
@@ -111,7 +114,7 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     }
 
     public static void main(String[] args) throws IOException {
-    	HistogramTest histo = new HistogramTest("Histogram");
+    	HistogramTest histo = new HistogramTest("", rolls, dice, sides);
         histo.pack();
         RefineryUtilities.centerFrameOnScreen(histo);
         histo.setVisible(true);
