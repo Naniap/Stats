@@ -10,7 +10,9 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -40,11 +42,15 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
 	private static int sides;
 	private SimpleHistogramDataset dataset;
 	private JTextArea box;
-    public HistogramTest(String title, int rolls, int dice, int sides) {
+	private static JFrame parent;
+	private JFrame frame;
+    public HistogramTest(String title, int rolls, int dice, int sides, JFrame parent) {
         super(title);
+        frame = this;
         HistogramTest.dice = dice;
         HistogramTest.rolls = rolls;
         HistogramTest.sides = sides;
+        HistogramTest.parent = parent;
         JPanel chartPanel = crearPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 475));
         getContentPane().setLayout(new BorderLayout());
@@ -53,6 +59,18 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
 	        
 	        JPanel panel = new JPanel();
 	        getContentPane().add(panel, BorderLayout.SOUTH);
+	        
+	        JButton btnReset = new JButton("Reset");
+	        btnReset.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent arg0) {
+	        		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "You will lose this data, are you sure you wish to reset?", "Warning!", JOptionPane.YES_NO_OPTION)) {
+	        			parent.setVisible(true);
+	        			frame.dispose();
+	        		}
+	        	}
+	        });
+	        btnReset.setHorizontalAlignment(SwingConstants.LEFT);
+	        panel.add(btnReset);
 	        JButton button = new JButton("Add observations: ");
 	        panel.add(button);
 	        button.setHorizontalAlignment(SwingConstants.LEFT);
@@ -65,15 +83,38 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // add a random observation in the range 0 to 3
-		for (int i = 0; i < Integer.parseInt(box.getText()); i++) { 
+		/*for (int i = 0; i < Integer.parseInt(box.getText()); i++) { 
 			double num = 0;
 			for (int j = 0; j < dice; j++) { 
 				num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
 			}
 			dataset.addObservation(num);
-		}
+		}*/
+    	if (Integer.parseInt(box.getText()) <= 10000000) {
+    		doWork(Math.ceil(Integer.parseInt(box.getText())/2));
+    		doWork(Math.floor(Integer.parseInt(box.getText())/2));
+    	}
+    	else { 
+    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
+    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
+    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
+    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
+    	}
     }
-
+    private void doWork(double num) {
+    	 Thread t = new Thread() {
+    		 public void run() {
+    				for (int i = 0; i < num; i++) { 
+    					double num = 0;
+    					for (int j = 0; j < dice; j++) { 
+    						num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
+    					}
+    					dataset.addObservation(num);
+    				}
+    		 }
+    	 };
+    	 t.start();
+    }
     private IntervalXYDataset crearDataset() {
     	dataset = new SimpleHistogramDataset("Die Toss");
 		for (int i = dice; i <= sides * dice + 1; i++) { 
@@ -114,7 +155,7 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     }
 
     public static void main(String[] args) throws IOException {
-    	HistogramTest histo = new HistogramTest("", rolls, dice, sides);
+    	HistogramTest histo = new HistogramTest("", rolls, dice, sides, parent);
         histo.pack();
         RefineryUtilities.centerFrameOnScreen(histo);
         histo.setVisible(true);

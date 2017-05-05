@@ -82,7 +82,7 @@ public class MainApp extends JFrame {
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				HistogramTest histo = new HistogramTest("", Integer.parseInt(txt_Roll.getText()), Integer.parseInt(txt_Die.getText()), Integer.parseInt(txt_Side.getText()));
+				HistogramTest histo = new HistogramTest("", Integer.parseInt(txt_Roll.getText()), Integer.parseInt(txt_Die.getText()), Integer.parseInt(txt_Side.getText()), frame);
 		        histo.pack();
 		        RefineryUtilities.centerFrameOnScreen(histo);
 		        histo.setVisible(true);
