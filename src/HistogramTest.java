@@ -35,6 +35,11 @@ import org.jfree.ui.RefineryUtilities;
 import javax.swing.SwingConstants;
 import javax.swing.JSplitPane;
 
+/***
+ * 
+ * @author Michael Coache
+ *
+ */
 
 public class HistogramTest extends ApplicationFrame implements ActionListener {
 	private static int dice;
