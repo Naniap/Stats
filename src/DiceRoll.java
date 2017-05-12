@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -73,11 +74,20 @@ public class DiceRoll extends JFrame {
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				HistogramTest histo = new HistogramTest("", Integer.parseInt(txt_Roll.getText()), Integer.parseInt(txt_Die.getText()), Integer.parseInt(txt_Side.getText()), frame);
-		        histo.pack();
-		        RefineryUtilities.centerFrameOnScreen(histo);
-		        histo.setVisible(true);
-		        frame.dispose();
+				if (txt_Roll.getText().equals("") || txt_Die.getText().equals("") || txt_Die.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Please make sure all fields are filled in.");
+					return;
+				}
+				try {
+					HistogramTest histo = new HistogramTest("", Integer.parseInt(txt_Roll.getText()), Integer.parseInt(txt_Die.getText()), Integer.parseInt(txt_Side.getText()), frame);
+			        histo.pack();
+			        RefineryUtilities.centerFrameOnScreen(histo);
+			        histo.setVisible(true);
+			        frame.dispose();
+				}
+				catch (NullPointerException | NumberFormatException e) {
+					JOptionPane.showMessageDialog(null, "Please enter integer values only.");
+				}
 			}
 		});
 		

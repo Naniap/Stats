@@ -1,0 +1,22 @@
+ /***********************************************************************************/
+ /***********************************User Guide**************************************/
+ /***********************************************************************************/
+ 1) User selects which application they wish to use, calculating probability of cards; or displaying a histogram of dice rolls.
+ /***********************************************************************************/
+ /***********************************Card Probabilities******************************/
+ /***********************************************************************************/
+ 1) The user enters the number of cards they wish to have.
+ 2) The user enters the number of hands to generate.
+ 3) The user selects the number choice to display the findings of either One Pair, Two Pair, Three of a kind
+    or Four of a kind.
+ 4) Click "Go!" for calculation. **Must have all three text fields filled in with values**
+ 5) Click "Reset" to select new input.
+ /***********************************************************************************/
+ /***********************************Dice roll***************************************/
+ /***********************************************************************************/
+ 1) User enters in number of dice
+ 2) User enters in number of initial rolls
+ 3) User enters in number of sides
+ 4a) User can add observations
+ 4b) User can reset all data and start over again
+  

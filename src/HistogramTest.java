@@ -81,6 +81,7 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
 	        button.setHorizontalAlignment(SwingConstants.LEFT);
 	        //setContentPane(chartPanel);
 	        box = new JTextArea("20");
+	        box.setColumns(10);
 	        panel.add(box);
 	        box.setBackground(Color.WHITE);
 	        button.addActionListener(this);
