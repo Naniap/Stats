@@ -79,7 +79,6 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
 	        JButton button = new JButton("Add observations: ");
 	        panel.add(button);
 	        button.setHorizontalAlignment(SwingConstants.LEFT);
-	        //setContentPane(chartPanel);
 	        box = new JTextArea("20");
 	        box.setColumns(10);
 	        panel.add(box);
@@ -88,23 +87,24 @@ public class HistogramTest extends ApplicationFrame implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        // add a random observation in the range 0 to 3
-		/*for (int i = 0; i < Integer.parseInt(box.getText()); i++) { 
-			double num = 0;
-			for (int j = 0; j < dice; j++) { 
-				num += (double)(ThreadLocalRandom.current().nextInt(1, sides + 1));
-			}
-			dataset.addObservation(num);
-		}*/
-    	if (Integer.parseInt(box.getText()) <= 10000000) {
-    		doWork(Math.ceil(Integer.parseInt(box.getText())/2));
-    		doWork(Math.floor(Integer.parseInt(box.getText())/2));
-    	}
-    	else { 
-    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
-    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
-    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
-    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
+		if (box.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Please make sure all fields are filled in.");
+			return;
+		}
+		try {
+	    	if (Integer.parseInt(box.getText()) <= 10000000) {
+	    		doWork(Math.ceil(Integer.parseInt(box.getText())/2));
+	    		doWork(Math.floor(Integer.parseInt(box.getText())/2));
+	    	}
+	    	else { 
+	    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
+	    		doWork(Math.ceil(Integer.parseInt(box.getText())/4));
+	    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
+	    		doWork(Math.floor(Integer.parseInt(box.getText())/4));
+	    	}
+		}
+		catch (NullPointerException | NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Please enter integer values only.");
     	}
     }
     private void doWork(double num) {
